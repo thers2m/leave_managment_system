@@ -23,6 +23,7 @@ public class DatabaseInitializer {
         CREATE TABLE IF NOT EXISTS leave_requests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             employee_id INTEGER,
+            employee_name TEXT,
             start_date TEXT,
             end_date TEXT,
             reason TEXT,

@@ -9,18 +9,15 @@ public class LeaveRequest {
     private String reason;
     private String status;
     private String createdAt;
+    private String employeeName;
 
-    public LeaveRequest(int employeeId, String startDate, String endDate, String reason) {
-        this.employeeId = employeeId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.reason = reason;
-    }
+    public LeaveRequest() {}
 
-    public LeaveRequest(int id, int employeeId, String startDate, String endDate,
+    public LeaveRequest(int id, int employeeId,String employeeName, String startDate, String endDate,
                         String reason, String status, String createdAt) {
         this.id = id;
         this.employeeId = employeeId;
+        this.employeeName = employeeName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.reason = reason;
@@ -31,6 +28,9 @@ public class LeaveRequest {
 
     public int getEmployeeId() {
         return employeeId;
+    }
+    public String getEmployeeName() {
+        return employeeName;
     }
 
     public String getStartDate() {
@@ -45,5 +45,6 @@ public class LeaveRequest {
         return reason;
     }
     public String getStatus() { return status; }
+
     public String getCreatedAt() { return createdAt; }
 }

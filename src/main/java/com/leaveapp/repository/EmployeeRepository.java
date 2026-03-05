@@ -11,10 +11,32 @@ import java.util.List;
 
 public class EmployeeRepository {
 
+        public void createEmp(String username, String password, String fullName, String role) {
+
+        String sql = """
+            INSERT INTO employees(username, password, full_name, role, is_active)
+            VALUES (?, ?, ?, ?, 1)
+        """;
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, fullName);
+            ps.setString(4, role);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+    }
+
     public Employee findByUsernameAndPassword(String username, String password) {
 
         String sql = """
-            SELECT id, username, full_name, role, annual_leave
+            SELECT id, username, full_name, role, password, annual_leave
             FROM employees
             WHERE username = ? AND password = ? AND is_active = 1
         """;
@@ -34,6 +56,7 @@ public class EmployeeRepository {
                             rs.getString("username"),
                             rs.getString("full_name"),
                             rs.getString("role"),
+                            rs.getString("password"),
                             rs.getInt("annual_leave")
                     );
                 }
@@ -45,8 +68,9 @@ public class EmployeeRepository {
 
         return null;
     }
+    
     public Employee findByUsername(String username) {
-        String sql = "SELECT id, username, full_name, role, annual_leave FROM employees WHERE username = ?";
+        String sql = "SELECT id, username, full_name, role, password,annual_leave FROM employees WHERE username = ?";
         try (Connection conn = Database.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -57,6 +81,7 @@ public class EmployeeRepository {
                         rs.getString("username"),
                         rs.getString("full_name"),
                         rs.getString("role"),
+                        rs.getString("password"),
                         rs.getInt("annual_leave")
                     );
                 }
@@ -87,7 +112,7 @@ public class EmployeeRepository {
     public Employee findById(int id) {
 
         String sql = """
-            SELECT id, username, full_name, role, password
+            SELECT id, username, full_name, role, password, annual_leave
             FROM employees
             WHERE id = ?
         """;
@@ -104,7 +129,8 @@ public class EmployeeRepository {
                             rs.getString("username"),
                             rs.getString("full_name"),
                             rs.getString("role"),
-                            rs.getString("password")
+                            rs.getString("password"),
+                            rs.getInt("annual_leave")
                     );
                 }
             }
@@ -115,34 +141,13 @@ public class EmployeeRepository {
 
         return null;
     }
-    
-    public void createEmp(String username, String password, String fullName, String role) {
 
-    String sql = """
-        INSERT INTO employees(username, password, full_name, role, is_active)
-        VALUES (?, ?, ?, ?, 1)
-    """;
-
-    try (Connection conn = Database.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setString(1, username);
-        ps.setString(2, password);
-        ps.setString(3, fullName);
-        ps.setString(4, role);
-
-        ps.executeUpdate();
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }   
-    }
     public List<Employee> findAll() {
 
         List<Employee> employees = new ArrayList<>();
 
         String sql = """
-            SELECT id, username, full_name, role, annual_leave
+            SELECT id, username, full_name, role,password, annual_leave
             FROM employees
             WHERE is_active = 1
         """;
@@ -157,7 +162,8 @@ public class EmployeeRepository {
                         rs.getString("username"),
                         rs.getString("full_name"),
                         rs.getString("role"),
-                        rs.getInt("annual_leave")  // ✅ giờ đã có trong SELECT
+                        rs.getString("password"),
+                        rs.getInt("annual_leave")
                 );
                 employees.add(emp);
             }
@@ -168,7 +174,7 @@ public class EmployeeRepository {
 
         return employees;
     }
-    public static int getLeaveQuota(int employeeId) {
+    public int getLeaveQuota(int employeeId) {
 
         String sql = """
             SELECT annual_leave

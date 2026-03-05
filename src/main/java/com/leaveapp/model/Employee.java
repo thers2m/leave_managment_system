@@ -1,7 +1,6 @@
 package com.leaveapp.model;
 
 public class Employee {
-
     private int id;
     private String username;
     private String fullName;
@@ -10,21 +9,16 @@ public class Employee {
     private int annualLeave;
 
     // Constructor dùng cho login
-    public Employee(int id, String username, String fullName, String role, int annualLeave) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.role = role;
-        this.annualLeave = annualLeave;
-    }
+    public Employee() {}
 
     // Constructor dùng cho change password
-    public Employee(int id, String username, String fullName, String role, String password) {
+    public Employee(int id, String username, String fullName, String role, String password, int annualLeave) {
         this.id = id;
         this.username = username;
         this.fullName = fullName;
         this.role = role;
         this.password = password;
+        this.annualLeave = annualLeave;
     }
 
     public int getId() { return id; }
@@ -36,5 +30,6 @@ public class Employee {
     public String getRole() { return role; }
 
     public String getPassword() { return password; }
+
     public int getAnnualLeave() { return annualLeave; }
 }

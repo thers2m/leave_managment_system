@@ -13,7 +13,7 @@ public class LeaveService {
     private LeaveRequestRepository repository = new LeaveRequestRepository();
     private EmployeeRepository employeeRepository = new EmployeeRepository();
 
-    public void createLeaveRequest(int employeeId, String startDate, String endDate, String reason) {
+    public void createLeaveRequest(int employeeId, String employeeName, String startDate, String endDate, String reason) {
 
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
@@ -40,7 +40,7 @@ public class LeaveService {
             throw new RuntimeException("Not enough leave quota");
         }
 
-        repository.create(new LeaveRequest(employeeId, startDate, endDate, reason));
+        repository.createRequest(employeeId, employeeName, startDate, endDate, reason);
     }
 
     public List<LeaveRequest> getMyLeaveRequests(int employeeId) {
@@ -54,7 +54,6 @@ public class LeaveService {
     }
 
     public void approveRequest(int requestId) {
-    // Lấy thông tin request để tính số ngày
     List<LeaveRequest> all = repository.findAll();
     LeaveRequest target = null;
     for (LeaveRequest r : all) {
@@ -63,21 +62,18 @@ public class LeaveService {
             break;
         }
     }
-
     if (target == null) {
         System.out.println("Request not found.");
         return;
     }
 
-    // Tính số ngày nghỉ
     LocalDate start = LocalDate.parse(target.getStartDate());
     LocalDate end = LocalDate.parse(target.getEndDate());
     int days = (int) ChronoUnit.DAYS.between(start, end) + 1;
 
-    // Cập nhật status
     repository.updateStatus(requestId, "APPROVED");
 
-    // Trừ annual_leave của employee
+
     employeeRepository.deductLeave(target.getEmployeeId(), days);
 }
 

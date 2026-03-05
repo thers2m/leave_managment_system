@@ -11,20 +11,21 @@ import java.util.List;
 
 public class LeaveRequestRepository {
 
-    public void create(LeaveRequest request) {
+    public void createRequest(int employeeId, String employeeName, String startDate, String endDate, String reason) {
 
         String sql = """
-            INSERT INTO leave_requests(employee_id, start_date, end_date, reason)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO leave_requests(employee_id, employee_name, start_date, end_date, reason)
+            VALUES (?, ?, ?, ?, ?)
         """;
 
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, request.getEmployeeId());
-            ps.setString(2, request.getStartDate());
-            ps.setString(3, request.getEndDate());
-            ps.setString(4, request.getReason());
+            ps.setInt(1, employeeId);
+            ps.setString(2, employeeName);
+            ps.setString(3, startDate);
+            ps.setString(4, endDate);
+            ps.setString(5, reason);
 
             ps.executeUpdate();
 
@@ -32,12 +33,14 @@ public class LeaveRequestRepository {
             e.printStackTrace();
         }
     }
-        public List<LeaveRequest> findByEmployeeId(int employeeId) {
+
+
+    public List<LeaveRequest> findByEmployeeId(int employeeId) {
 
         List<LeaveRequest> list = new ArrayList<>();
 
         String sql = """
-            SELECT id, employee_id, start_date, end_date, reason, status, created_at
+            SELECT id, employee_id, employee_name, start_date, end_date, reason, status, created_at
             FROM leave_requests
             WHERE employee_id = ?
             ORDER BY id DESC
@@ -53,6 +56,7 @@ public class LeaveRequestRepository {
                     list.add(new LeaveRequest(
                             rs.getInt("id"),
                             rs.getInt("employee_id"),
+                            rs.getString("employee_name"),
                             rs.getString("start_date"),
                             rs.getString("end_date"),
                             rs.getString("reason"),
@@ -68,12 +72,13 @@ public class LeaveRequestRepository {
 
         return list;
     }
+
     public List<LeaveRequest> findAll() {
 
         List<LeaveRequest> list = new ArrayList<>();
 
         String sql = """
-            SELECT id, employee_id, start_date, end_date, reason, status, created_at
+            SELECT id, employee_id, employee_name, start_date, end_date, reason, status, created_at
             FROM leave_requests
             ORDER BY created_at DESC
         """;
@@ -87,6 +92,7 @@ public class LeaveRequestRepository {
                 list.add(new LeaveRequest(
                         rs.getInt("id"),
                         rs.getInt("employee_id"),
+                        rs.getString("employee_name"),
                         rs.getString("start_date"),
                         rs.getString("end_date"),
                         rs.getString("reason"),
@@ -101,6 +107,7 @@ public class LeaveRequestRepository {
 
         return list;
     }
+
     public void updateStatus(int requestId, String status) {
 
         String sql = """
@@ -121,6 +128,7 @@ public class LeaveRequestRepository {
             e.printStackTrace();
         }
     }
+    
     public boolean hasOverlap(int employeeId, String startDate, String endDate) {
 
         String sql = """
@@ -153,6 +161,7 @@ public class LeaveRequestRepository {
 
         return false;
     }
+
     public int getUsedLeaveDays(int employeeId) {
 
         String sql = """

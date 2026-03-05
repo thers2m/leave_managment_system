@@ -15,13 +15,18 @@ public class AuthService {
 
     public boolean changePassword(int employeeId, String oldPassword, String newPassword) {
         Employee employee = repository.findById(employeeId);
-        if (employee == null) return false;
+        if (employee == null) {
+            return false;
+        }
+
         String oldHashed = PasswordUtil.hashPassword(oldPassword);
-            if (!employee.getPassword().equals(oldHashed)) {
-                return false;
-            }
-            String newHashed = PasswordUtil.hashPassword(newPassword);
-            repository.updatePassword(employeeId, newHashed);
-        return true;
+        if (!employee.getPassword().equals(oldHashed)) {
+            return false; 
+        }
+
+        String newHashed = PasswordUtil.hashPassword(newPassword);
+        repository.updatePassword(employeeId, newHashed);
+        
+        return true; 
     }
 }
