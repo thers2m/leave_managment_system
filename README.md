@@ -1,4 +1,4 @@
-Leave Management System
+Leave Management System: 
 A console-based Java application for managing employee leave requests. Supports two roles: Manager and Employee, with SQLite as the database.
 
 Requirements:
